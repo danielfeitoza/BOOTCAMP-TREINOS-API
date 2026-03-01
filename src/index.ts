@@ -1,8 +1,11 @@
 // Import the framework and instantiate it
 import "dotenv/config";
 
+import fastifySwagger from "@fastify/swagger";
+import fastifySwaggerUI from "@fastify/swagger-ui";
 import Fastify from "fastify";
 import {
+  jsonSchemaTransform,
   serializerCompiler,
   validatorCompiler,
   ZodTypeProvider,
@@ -15,6 +18,27 @@ const app = Fastify({
 
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
+
+await app.register(fastifySwagger, {
+  openapi: {
+    info: {
+      title: "Bootcamp Treinos API",
+      description: "API para o bootcamp de treinos do Full Stack Club",
+      version: "1.0.0",
+    },
+    servers: [
+      {
+        description: "Localhost",
+        url: "http://localhost:8081",
+      },
+    ],
+  },
+  transform: jsonSchemaTransform,
+});
+
+await app.register(fastifySwaggerUI, {
+  routePrefix: "/docs",
+});
 
 // Declare a route
 app.get("/teste", async function handler() {
@@ -42,7 +66,7 @@ app.withTypeProvider<ZodTypeProvider>().route({
 
 // Run the server!
 try {
-  await app.listen({ port: Number(process.env.PORT) || 3000 });
+  await app.listen({ port: Number(process.env.PORT) || 8081 });
 } catch (err) {
   app.log.error(err);
   process.exit(1);
