@@ -34,7 +34,7 @@ model WorkoutPlan {
   name       String
   userId     String
   user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  WorkoutDay WorkoutDay[]
+  workoutDays WorkoutDay[]
   isActive   Boolean      @default(true)
   createdAt  DateTime     @default(now()) @db.Timestamptz()
   updatedAt  DateTime     @updatedAt @db.Timestamptz()
@@ -51,16 +51,16 @@ enum Weekday {
 }
 
 model WorkoutDay {
-  id            String            @id @default(uuid())
-  date          DateTime
-  workoutPlanId String
-  workoutPlan   WorkoutPlan       @relation(fields: [workoutPlanId], references: [id], onDelete: Cascade)
-  isRest        Boolean           @default(false)
-  weekday       Weekday
-  exercises     WorkoutExercise[]
-  createdAt     DateTime          @default(now()) @db.Timestamptz()
-  updatedAt     DateTime          @updatedAt @db.Timestamptz()
-  sessions      WorkoutSession[]
+  id                         String            @id @default(uuid())
+  name                       String
+  workoutPlanId              String
+  workoutPlan                WorkoutPlan       @relation(fields: [workoutPlanId], references: [id], onDelete: Cascade)
+  isRest                     Boolean           @default(false)
+  weekday                    Weekday
+  exercises                  WorkoutExercise[]
+  estimatedDurationInSeconds Int
+  createdAt                  DateTime          @default(now()) @db.Timestamptz()
+  updatedAt                  DateTime          @updatedAt @db.Timestamptz()
 }
 
 model WorkoutExercise {
@@ -74,16 +74,6 @@ model WorkoutExercise {
   restTimeInSeconds Int
   createdAt         DateTime   @default(now()) @db.Timestamptz()
   updatedAt         DateTime   @updatedAt @db.Timestamptz()
-}
-
-model WorkoutSession {
-  id           String     @id @default(uuid())
-  workoutDayId String
-  workoutDay   WorkoutDay @relation(fields: [workoutDayId], references: [id], onDelete: Cascade)
-  startedAt    DateTime   @db.Timestamptz()
-  completedAt  DateTime?  @db.Timestamptz()
-  createdAt    DateTime   @default(now()) @db.Timestamptz()
-  updatedAt    DateTime   @updatedAt @db.Timestamptz()
 }
 
 model Session {
