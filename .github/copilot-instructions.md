@@ -53,6 +53,7 @@ Sempre priorizar implementações simples, seguras, tipadas e consistentes com o
 - Mensagens de erro devem ser claras e úteis para o consumidor da API.
 - Reutilizar schemas centralizados em `src/schemas` e derivar variações com `omit/pick/extend` quando possível.
 - Para enums de domínio mapeados no Prisma, reutilizar enums gerados (ex.: `Weekday`).
+- Sempre que houver campo `weekday` em schema Zod, usar `z.enum(Weekday)` importado de `src/generated/prisma/enums` (não usar `z.string()` para dia da semana).
 
 ## Regras de banco (Prisma)
 
