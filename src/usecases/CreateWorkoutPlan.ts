@@ -29,7 +29,7 @@ export interface CreateWorkoutPlanOutputDto {
     weekday: Weekday;
     isRest: boolean;
     estimatedDurationInSeconds: number;
-    coverImageUrl: string | null;
+    coverImageUrl?: string | null;
     exercises: Array<{
       order: number;
       name: string;
