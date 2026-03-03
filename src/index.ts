@@ -16,6 +16,7 @@ import z from "zod";
 
 import { NotFoundError } from "./erros/index.js";
 import { auth } from "./lib/auth.js";
+import { homeRouter } from "./routes/home.js";
 import { workoutPlanRouter } from "./routes/workout-plan.js";
 import { ErrorSchema, WorkoutPlanSchema } from "./schemas/index.js";
 import { CreateWorkoutPlan } from "./usecases/CreateWorkoutPlan.js";
@@ -72,6 +73,7 @@ await app.register(fastifyApiReference, {
 // Routes
 
 await app.register(workoutPlanRouter, { prefix: "/workout-plans" });
+await app.register(homeRouter, { prefix: "/home" });
 
 app.withTypeProvider<ZodTypeProvider>().route({
   method: "GET",
