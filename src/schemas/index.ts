@@ -110,6 +110,24 @@ export const GetWorkoutDayResponseSchema = z.object({
   sessions: z.array(WorkoutSessionSummarySchema),
 });
 
+export const StatsQuerySchema = z.object({
+  from: z.iso.date(),
+  to: z.iso.date(),
+});
+
+const StatsConsistencyDaySchema = z.object({
+  workoutDayCompleted: z.boolean(),
+  workoutDayStarted: z.boolean(),
+});
+
+export const StatsResponseSchema = z.object({
+  workoutStreak: z.number(),
+  consistencyByDay: z.record(z.string(), StatsConsistencyDaySchema),
+  completedWorkoutsCount: z.number(),
+  conclusionRate: z.number(),
+  totalTimeInSeconds: z.number(),
+});
+
 export const WorkoutPlanSchema = z.object({
   id: z.uuid(),
   name: z.string().trim().min(1),
