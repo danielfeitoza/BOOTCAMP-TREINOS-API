@@ -27,15 +27,24 @@ Sempre priorizar implementações simples, seguras, tipadas e consistentes com o
 9. Preservar padrão de erro de API no formato `{ error, code }`.
 10. Evitar lógica de negócio em rotas; manter orquestração em `usecases`.
 
+## Regras de Git
+
+- Mensagens de commit devem seguir Conventional Commits (`feat:`, `fix:`, `docs:`, etc.).
+- Nunca criar commit sem solicitação explícita do usuário.
+
 ## Regras de API (Fastify)
 
 - Registrar rotas usando o padrão já existente no servidor.
+- Seguir princípios REST para naming e semântica de rotas.
 - Rotas de domínio devem ficar em `src/routes` e ser registradas no `src/index.ts` com `prefix` explícito.
 - Usar `withTypeProvider<ZodTypeProvider>()` nas rotas com schema Zod.
 - Sempre tipar request/response com Zod quando houver entrada/saída estruturada.
 - Respostas devem ser consistentes em formato e códigos HTTP.
 - Em endpoints de criação, preferir retorno `201` com payload criado.
 - Preservar documentação em `/swagger.json` e `/docs` ao alterar servidor/rotas.
+- Incluir `tags` e `summary` no schema da rota para documentação OpenAPI.
+- Rotas devem instanciar e chamar um use case para executar regras de negócio.
+- Rotas devem tratar erros lançados pelo use case e mapear para status HTTP apropriado.
 
 ## Regras de validação (Zod)
 
@@ -54,6 +63,16 @@ Sempre priorizar implementações simples, seguras, tipadas e consistentes com o
 - Em operações dependentes (ex.: desativar plano anterior + criar novo), usar transação (`prisma.$transaction`).
 - Preservar regra de negócio atual: apenas um `WorkoutPlan` ativo por usuário.
 - Usar o client centralizado em `src/lib/db.ts`.
+
+## Regras de Use Cases
+
+- Use cases devem ficar em `src/usecases` e ser implementados como classes com método `execute`.
+- O nome do use case deve representar uma ação (verbo).
+- Quando houver entrada estruturada, usar interface DTO de entrada no mesmo arquivo (`InputDto` ou nome equivalente).
+- O retorno do use case deve ser tipado por interface DTO de saída no mesmo arquivo (`OutputDto` ou nome equivalente).
+- Não retornar model Prisma diretamente quando isso acoplar a camada de negócio ao banco; mapear para DTO de saída.
+- Use case não deve fazer `try/catch` para resposta HTTP; exceções são tratadas na rota.
+- Ao lançar erro de domínio, usar classes de erro em `src/erros`.
 
 ## Regras de autenticação
 
@@ -79,6 +98,9 @@ Sempre priorizar implementações simples, seguras, tipadas e consistentes com o
 - Se houver testes no escopo afetado, atualizar/adicionar de forma pontual.
 - Não corrigir problemas não relacionados ao pedido, mas mencionar achados relevantes.
 - Respeitar ordenação de imports e regras de lint existentes.
+- Evitar `any`; preferir tipagem explícita e inferência segura.
+- Preferir named exports em vez de default exports, salvo necessidade clara.
+- Ao receber mais de 2 parâmetros em função/método, preferir objeto como argumento.
 
 ## Regras de resposta do assistente
 
@@ -97,6 +119,9 @@ Ao implementar mudanças, o assistente deve:
 - Evitar variáveis de uma letra.
 - Funções curtas, com responsabilidade única.
 - Retorno antecipado quando melhora legibilidade.
+- Preferir `interface` em vez de `type` quando a modelagem permitir.
+- Usar `camelCase` para variáveis/funções/métodos e `PascalCase` para classes.
+- Manter `kebab-case` em nomes de arquivo; exceção: arquivos de use case em `PascalCase`.
 
 ## Fora de escopo por padrão
 
