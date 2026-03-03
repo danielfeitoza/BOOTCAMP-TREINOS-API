@@ -8,6 +8,7 @@
 - Persistência: Prisma + PostgreSQL.
 - Autenticação: Better Auth com rotas proxied em `/api/auth/*`.
 - Módulo ESM (`type: module`) e TS estrito (`strict: true`).
+- Organização atual por camadas: `src/routes`, `src/schemas`, `src/usecases`, `src/lib`, `src/erros`.
 
 ## Objetivo dessas regras
 
@@ -22,20 +23,27 @@ Sempre priorizar implementações simples, seguras, tipadas e consistentes com o
 5. Não renomear símbolos públicos sem motivo funcional claro.
 6. Manter compatibilidade com ESM e TypeScript estrito.
 7. Ao editar, preservar estilo e convenções já existentes no projeto.
+8. Não editar manualmente arquivos em `src/generated/prisma`; qualquer ajuste deve partir de `prisma/schema.prisma` + geração do client.
+9. Preservar padrão de erro de API no formato `{ error, code }`.
+10. Evitar lógica de negócio em rotas; manter orquestração em `usecases`.
 
 ## Regras de API (Fastify)
 
 - Registrar rotas usando o padrão já existente no servidor.
+- Rotas de domínio devem ficar em `src/routes` e ser registradas no `src/index.ts` com `prefix` explícito.
+- Usar `withTypeProvider<ZodTypeProvider>()` nas rotas com schema Zod.
 - Sempre tipar request/response com Zod quando houver entrada/saída estruturada.
 - Respostas devem ser consistentes em formato e códigos HTTP.
-- Evitar lógica de negócio pesada no arquivo principal da API.
-- Se necessário, extrair responsabilidades para módulos em `src/` mantendo organização por domínio.
+- Em endpoints de criação, preferir retorno `201` com payload criado.
+- Preservar documentação em `/swagger.json` e `/docs` ao alterar servidor/rotas.
 
 ## Regras de validação (Zod)
 
 - Toda entrada externa (params, query, body) deve ser validada.
 - Toda resposta estruturada deve ter schema de resposta quando aplicável.
 - Mensagens de erro devem ser claras e úteis para o consumidor da API.
+- Reutilizar schemas centralizados em `src/schemas` e derivar variações com `omit/pick/extend` quando possível.
+- Para enums de domínio mapeados no Prisma, reutilizar enums gerados (ex.: `Weekday`).
 
 ## Regras de banco (Prisma)
 
@@ -43,6 +51,9 @@ Sempre priorizar implementações simples, seguras, tipadas e consistentes com o
 - Não quebrar relações existentes sem solicitação explícita.
 - Em mudanças de schema, sugerir/considerar migration correspondente.
 - Evitar consultas N+1 quando possível.
+- Em operações dependentes (ex.: desativar plano anterior + criar novo), usar transação (`prisma.$transaction`).
+- Preservar regra de negócio atual: apenas um `WorkoutPlan` ativo por usuário.
+- Usar o client centralizado em `src/lib/db.ts`.
 
 ## Regras de autenticação
 
@@ -50,12 +61,16 @@ Sempre priorizar implementações simples, seguras, tipadas e consistentes com o
 - Rotas protegidas devem validar sessão/usuário autenticado.
 - Preservar comportamento de proxy em `/api/auth/*`.
 - Considerar `trustedOrigins` e CORS ao propor integração com frontend.
+- Em rotas protegidas Fastify, seguir padrão atual de sessão: `auth.api.getSession({ headers: fromNodeHeaders(request.headers) })`.
+- Se sessão ausente, responder `401` com payload de erro padronizado.
 
 ## Regras de erros e observabilidade
 
 - Tratar erros com códigos HTTP corretos (`400`, `401`, `403`, `404`, `409`, `422`, `500`).
 - Não vazar detalhes sensíveis de exceções para o cliente.
 - Logs devem ajudar debug, sem expor segredo/token.
+- Erros de domínio devem ser representados por classes em `src/erros` quando fizer sentido.
+- Para falhas inesperadas, retornar mensagem genérica e manter detalhes apenas no log.
 
 ## Regras de qualidade
 
@@ -63,6 +78,7 @@ Sempre priorizar implementações simples, seguras, tipadas e consistentes com o
 - Evitar duplicação; reutilizar utilitários existentes.
 - Se houver testes no escopo afetado, atualizar/adicionar de forma pontual.
 - Não corrigir problemas não relacionados ao pedido, mas mencionar achados relevantes.
+- Respeitar ordenação de imports e regras de lint existentes.
 
 ## Regras de resposta do assistente
 
@@ -73,6 +89,7 @@ Ao implementar mudanças, o assistente deve:
 3. Informar validações executadas (lint/test/build), quando aplicável.
 4. Citar riscos ou pendências curtas, se houver.
 5. Sugerir próximo passo objetivo.
+6. Quando não houver script de validação disponível para uma checagem, declarar explicitamente a limitação.
 
 ## Preferências de estilo
 
