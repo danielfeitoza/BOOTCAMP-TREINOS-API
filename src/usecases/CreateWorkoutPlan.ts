@@ -6,8 +6,6 @@
 // lógica de negócio mais ampla e ser utilizado por vários Use Cases. O Use Case é mais
 // orientado a ações específicas, enquanto o service é mais orientado a funcionalidades gerais.
 
-import { includes } from "zod";
-
 import { NotFoundError } from "../erros/index.js";
 import { Weekday } from "../generated/prisma/enums.js";
 import { prisma } from "../lib/db.js";
