@@ -16,6 +16,7 @@ import z from "zod";
 
 import { NotFoundError } from "./erros/index.js";
 import { auth } from "./lib/auth.js";
+import { aiRoutes } from "./routes/ai.js";
 import { homeRouter } from "./routes/home.js";
 import { meRouter } from "./routes/me.js";
 import { statsRouter } from "./routes/stats.js";
@@ -78,6 +79,7 @@ await app.register(workoutPlanRouter, { prefix: "/workout-plans" });
 await app.register(homeRouter, { prefix: "/home" });
 await app.register(statsRouter, { prefix: "/stats" });
 await app.register(meRouter, { prefix: "/me" });
+await app.register(aiRoutes, { prefix: "/ai" });
 
 app.withTypeProvider<ZodTypeProvider>().route({
   method: "GET",
