@@ -6,13 +6,12 @@ import {
   tool,
   UIMessage,
 } from "ai";
-import { fromNodeHeaders } from "better-auth/node";
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import z from "zod";
 
 import { Weekday } from "../generated/prisma/enums.js";
-import { auth } from "../lib/auth.js";
+import { authMiddleware } from "../lib/auth-middleware.js";
 import { CreateWorkoutPlan } from "../usecases/CreateWorkoutPlan.js";
 import { GetUserTrainData } from "../usecases/GetUserTrainData.js";
 import { ListWorkoutPlans } from "../usecases/ListWorkoutPlans.js";
@@ -82,16 +81,9 @@ export const aiRoutes = async (app: FastifyInstance) => {
       tags: ["AI"],
       summary: "AI personal trainer chat endpoint",
     },
+    preHandler: authMiddleware,
     handler: async (request, reply) => {
-      const session = await auth.api.getSession({
-        headers: fromNodeHeaders(request.headers),
-      });
-
-      if (!session) {
-        return reply.status(401).send({ error: "Unauthorized" });
-      }
-
-      const userId = session.user.id;
+      const userId = request.session.user.id;
       const { messages } = request.body as { messages: UIMessage[] };
       const result = await streamText({
         model: google("gemini-2.0-flash"),

@@ -1,8 +1,7 @@
-import { fromNodeHeaders } from "better-auth/node";
 import { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 
-import { auth } from "../lib/auth.js";
+import { authMiddleware } from "../lib/auth-middleware.js";
 import {
   ErrorSchema,
   StatsQuerySchema,
@@ -24,22 +23,12 @@ export const statsRouter = async (app: FastifyInstance) => {
         500: ErrorSchema,
       },
     },
+    preHandler: authMiddleware,
     handler: async (request, reply) => {
       try {
-        const session = await auth.api.getSession({
-          headers: fromNodeHeaders(request.headers),
-        });
-
-        if (!session) {
-          return reply.status(401).send({
-            error: "Unauthorized",
-            code: "UNAUTHORIZED",
-          });
-        }
-
         const getStats = new GetStats();
         const result = await getStats.execute({
-          userId: session.user.id,
+          userId: request.session.user.id,
           from: request.query.from,
           to: request.query.to,
         });
