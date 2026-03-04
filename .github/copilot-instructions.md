@@ -114,6 +114,11 @@ Ao implementar mudanças, o assistente deve:
 5. Sugerir próximo passo objetivo.
 6. Quando não houver script de validação disponível para uma checagem, declarar explicitamente a limitação.
 
+## MCPs
+
+- **SEMPRE** usar Context7 para buscar documentações.
+- **SEMPRE** validar se a implementação está de acordo com a documentação, considerando compatibilidade com as versões usadas na aplicação.
+
 ## Preferências de estilo
 
 - Nomes claros e descritivos.
