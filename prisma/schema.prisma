@@ -24,6 +24,11 @@ model User {
   updatedAt     DateTime      @updatedAt
   sessions      Session[]
   accounts      Account[]
+  weightInGrams       Int?
+  heightInCentimeters Int?
+  age                 Int?
+  bodyFatPercentage   Float?
+
 
   @@unique([email])
   @@map("user")
