@@ -39,9 +39,18 @@ export class StartWorkoutSession {
       throw new NotFoundError("Workout day not found");
     }
 
+    const todayStart = new Date();
+    todayStart.setUTCHours(0, 0, 0, 0);
+    const todayEnd = new Date();
+    todayEnd.setUTCHours(23, 59, 59, 999);
+
     const existingSession = await prisma.workoutSession.findFirst({
       where: {
         workoutDayId: dto.workoutDayId,
+        startedAt: {
+          gte: todayStart,
+          lte: todayEnd,
+        },
       },
     });
 
