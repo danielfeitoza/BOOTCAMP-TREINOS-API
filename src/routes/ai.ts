@@ -209,8 +209,8 @@ export const aiRoutes = async (app: FastifyInstance) => {
         messages: await convertToModelMessages(messages),
       });
       const response = result.toUIMessageStreamResponse();
-      reply.send(response);
       response.headers.forEach((value, key) => reply.header(key, value));
+      reply.status(response.status);
       return reply.send(response.body);
     },
   });
