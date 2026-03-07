@@ -25,8 +25,22 @@ import { workoutPlanRouter } from "./routes/workout-plan.js";
 import { ErrorSchema, WorkoutPlanSchema } from "./schemas/index.js";
 import { CreateWorkoutPlan } from "./usecases/CreateWorkoutPlan.js";
 
+const envToLogger = {
+  development: {
+    transport: {
+      target: "pino-pretty",
+      options: {
+        translateTime: "HH:MM:ss Z",
+        ignore: "pid,hostname",
+      },
+    },
+  },
+  production: true,
+  test: false,
+};
+
 const app = Fastify({
-  logger: true,
+  logger: envToLogger[env.NODE_ENV],
   trustProxy: true,
 });
 
