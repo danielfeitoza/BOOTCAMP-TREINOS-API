@@ -19,4 +19,11 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
   plugins: [openAPI(), dash()],
+  advanced: {
+    crossSubDomainCookies: {
+      enabled: true,
+      domain:
+        env.NODE_ENV === "production" ? ".cidadeladocodigo.com.br" : undefined,
+    },
+  },
 });
