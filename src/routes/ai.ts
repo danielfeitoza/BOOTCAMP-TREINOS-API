@@ -87,7 +87,7 @@ export const aiRoutes = async (app: FastifyInstance) => {
       const userId = request.session.user.id;
       const { messages } = request.body as { messages: UIMessage[] };
       const result = await streamText({
-        model: google("gemini-2.0-flash"),
+        model: google("gemini-2.5-flash"),
         system: SYSTEM_PROMPT,
         tools: {
           getUserTrainData: tool({
