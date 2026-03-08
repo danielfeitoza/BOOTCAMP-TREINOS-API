@@ -5,10 +5,13 @@ import { authMiddleware } from "../lib/auth-middleware.js";
 import {
   ErrorSchema,
   GetUserTrainDataResponseSchema,
+  UpsertUserTimezoneBodySchema,
+  UpsertUserTimezoneResponseSchema,
   UpsertUserTrainDataBodySchema,
   UpsertUserTrainDataResponseSchema,
 } from "../schemas/index.js";
 import { GetUserTrainData } from "../usecases/GetUserTrainData.js";
+import { UpsertUserTimezone } from "../usecases/UpsertUserTimezone.js";
 import { UpsertUserTrainData } from "../usecases/UpsertUserTrainData.js";
 
 export const meRouter = async (app: FastifyInstance) => {
@@ -30,6 +33,41 @@ export const meRouter = async (app: FastifyInstance) => {
       try {
         const getUserTrainData = new GetUserTrainData();
         const result = await getUserTrainData.execute(request.session.user.id);
+
+        return reply.status(200).send(result);
+      } catch (error) {
+        app.log.error(error);
+
+        return reply.status(500).send({
+          error: "Internal Server Error",
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
+    },
+  });
+
+  app.withTypeProvider<ZodTypeProvider>().route({
+    method: "PATCH",
+    url: "/timezone",
+    schema: {
+      operationId: "upsertUserTimezone",
+      tags: ["Me"],
+      summary: "Create or update authenticated user timezone",
+      body: UpsertUserTimezoneBodySchema,
+      response: {
+        200: UpsertUserTimezoneResponseSchema,
+        401: ErrorSchema,
+        500: ErrorSchema,
+      },
+    },
+    preHandler: authMiddleware,
+    handler: async (request, reply) => {
+      try {
+        const upsertUserTimezone = new UpsertUserTimezone();
+        const result = await upsertUserTimezone.execute({
+          userId: request.session.user.id,
+          timezone: request.body.timezone,
+        });
 
         return reply.status(200).send(result);
       } catch (error) {

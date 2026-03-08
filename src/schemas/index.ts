@@ -2,6 +2,15 @@ import z from "zod";
 
 import { Weekday } from "../generated/prisma/enums.js";
 
+function isValidIanaTimezone(timezone: string) {
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: timezone });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export const ErrorSchema = z.object({
   error: z.string(),
   code: z.string(),
@@ -214,3 +223,18 @@ export const GetUserTrainDataResponseSchema = z
     bodyFatPercentage: z.number(),
   })
   .nullable();
+
+export const UpsertUserTimezoneBodySchema = z.object({
+  timezone: z
+    .string()
+    .trim()
+    .min(1)
+    .refine((timezone) => isValidIanaTimezone(timezone), {
+      message: "Invalid IANA timezone",
+    }),
+});
+
+export const UpsertUserTimezoneResponseSchema = z.object({
+  userId: z.string(),
+  timezone: z.string(),
+});

@@ -4,8 +4,6 @@ import "dotenv/config";
 import fastifyCors from "@fastify/cors";
 import fastifySwagger from "@fastify/swagger";
 import fastifyApiReference from "@scalar/fastify-api-reference";
-import { ENV } from "better-auth";
-import { fromNodeHeaders } from "better-auth/node";
 import Fastify from "fastify";
 import {
   jsonSchemaTransform,
@@ -15,7 +13,6 @@ import {
 } from "fastify-type-provider-zod";
 import z from "zod";
 
-import { NotFoundError } from "./erros/index.js";
 import { auth } from "./lib/auth.js";
 import { env } from "./lib/env.js";
 import { aiRoutes } from "./routes/ai.js";
@@ -23,8 +20,6 @@ import { homeRouter } from "./routes/home.js";
 import { meRouter } from "./routes/me.js";
 import { statsRouter } from "./routes/stats.js";
 import { workoutPlanRouter } from "./routes/workout-plan.js";
-import { ErrorSchema, WorkoutPlanSchema } from "./schemas/index.js";
-import { CreateWorkoutPlan } from "./usecases/CreateWorkoutPlan.js";
 
 const envToLogger = {
   development: {
