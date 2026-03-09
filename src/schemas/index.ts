@@ -264,6 +264,14 @@ export const WatchDeviceCodeQuerySchema = z.object({
   deviceCode: z.uuid(),
 });
 
+export const WatchUserByDeviceCodeQuerySchema = z.object({
+  deviceCode: z.uuid(),
+});
+
+export const WatchUserByDeviceCodeResponseSchema = z.object({
+  userId: z.union([z.string(), z.literal(0)]),
+});
+
 export const WatchActiveSessionParamsSchema = z.object({
   date: z.iso.date(),
 });

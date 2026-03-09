@@ -19,13 +19,48 @@ import {
   WatchDeviceCodeQuerySchema,
   WatchTodayWorkoutParamsSchema,
   WatchTodayWorkoutResponseSchema,
+  WatchUserByDeviceCodeQuerySchema,
+  WatchUserByDeviceCodeResponseSchema,
 } from "../schemas/index.js";
 import { CompleteWatchWorkoutSession } from "../usecases/CompleteWatchWorkoutSession.js";
+import { GetUserIdByDeviceCode } from "../usecases/GetUserIdByDeviceCode.js";
 import { GetWatchActiveSession } from "../usecases/GetWatchActiveSession.js";
 import { GetWatchTodayWorkout } from "../usecases/GetWatchTodayWorkout.js";
 import { StartWatchWorkoutSession } from "../usecases/StartWatchWorkoutSession.js";
 
 export const watchRouter = async (app: FastifyInstance) => {
+  app.withTypeProvider<ZodTypeProvider>().route({
+    method: "GET",
+    url: "/user-id",
+    schema: {
+      operationId: "getWatchUserIdByDeviceCode",
+      tags: ["Watch"],
+      summary: "Get user id by smartwatch device code",
+      querystring: WatchUserByDeviceCodeQuerySchema,
+      response: {
+        200: WatchUserByDeviceCodeResponseSchema,
+        500: ErrorSchema,
+      },
+    },
+    handler: async (request, reply) => {
+      try {
+        const getUserIdByDeviceCode = new GetUserIdByDeviceCode();
+        const result = await getUserIdByDeviceCode.execute({
+          deviceCode: request.query.deviceCode,
+        });
+
+        return reply.status(200).send(result);
+      } catch (error) {
+        app.log.error(error);
+
+        return reply.status(500).send({
+          error: "Internal Server Error",
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
+    },
+  });
+
   app.withTypeProvider<ZodTypeProvider>().route({
     method: "GET",
     url: "/sessions/active/:date",
