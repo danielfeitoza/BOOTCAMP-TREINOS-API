@@ -13,15 +13,53 @@ import {
   ErrorSchema,
   StartWatchWorkoutSessionBodySchema,
   StartWorkoutSessionResponseSchema,
+  WatchActiveSessionParamsSchema,
+  WatchActiveSessionQuerySchema,
+  WatchActiveSessionResponseSchema,
   WatchDeviceCodeQuerySchema,
   WatchTodayWorkoutParamsSchema,
   WatchTodayWorkoutResponseSchema,
 } from "../schemas/index.js";
 import { CompleteWatchWorkoutSession } from "../usecases/CompleteWatchWorkoutSession.js";
+import { GetWatchActiveSession } from "../usecases/GetWatchActiveSession.js";
 import { GetWatchTodayWorkout } from "../usecases/GetWatchTodayWorkout.js";
 import { StartWatchWorkoutSession } from "../usecases/StartWatchWorkoutSession.js";
 
 export const watchRouter = async (app: FastifyInstance) => {
+  app.withTypeProvider<ZodTypeProvider>().route({
+    method: "GET",
+    url: "/sessions/active/:date",
+    schema: {
+      operationId: "getWatchActiveSession",
+      tags: ["Watch"],
+      summary: "Get active workout session for a user and date",
+      params: WatchActiveSessionParamsSchema,
+      querystring: WatchActiveSessionQuerySchema,
+      response: {
+        200: WatchActiveSessionResponseSchema,
+        500: ErrorSchema,
+      },
+    },
+    handler: async (request, reply) => {
+      try {
+        const getWatchActiveSession = new GetWatchActiveSession();
+        const result = await getWatchActiveSession.execute({
+          userId: request.query.userId,
+          date: request.params.date,
+        });
+
+        return reply.status(200).send(result);
+      } catch (error) {
+        app.log.error(error);
+
+        return reply.status(500).send({
+          error: "Internal Server Error",
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
+    },
+  });
+
   app.withTypeProvider<ZodTypeProvider>().route({
     method: "GET",
     url: "/today/:date",

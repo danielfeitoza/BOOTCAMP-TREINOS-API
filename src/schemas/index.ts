@@ -264,6 +264,14 @@ export const WatchDeviceCodeQuerySchema = z.object({
   deviceCode: z.uuid(),
 });
 
+export const WatchActiveSessionParamsSchema = z.object({
+  date: z.iso.date(),
+});
+
+export const WatchActiveSessionQuerySchema = z.object({
+  userId: z.string().trim().min(1),
+});
+
 export const WatchTodayWorkoutResponseSchema = z.object({
   workoutPlanId: z.uuid(),
   workoutDayId: z.uuid(),
@@ -298,3 +306,27 @@ export const CompleteWatchWorkoutSessionBodySchema = z.object({
   workoutDayId: z.uuid(),
   completedAt: z.iso.datetime(),
 });
+
+export const WatchActiveSessionResponseSchema = z.union([
+  z.object({
+    active: z.literal(false),
+  }),
+  z.object({
+    active: z.literal(true),
+    workoutPlanId: z.uuid(),
+    workoutDayId: z.uuid(),
+    workoutDayName: z.string(),
+    weekDay: z.string(),
+    isRest: z.boolean(),
+    exercises: z.array(
+      z.object({
+        id: z.uuid(),
+        name: z.string(),
+        order: z.number(),
+        sets: z.number(),
+        reps: z.number(),
+        restTimeInSeconds: z.number(),
+      }),
+    ),
+  }),
+]);
