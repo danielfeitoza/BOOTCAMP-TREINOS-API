@@ -304,6 +304,11 @@ export const StartWatchWorkoutSessionBodySchema = z.object({
   workoutDayId: z.uuid(),
 });
 
+export const StartWatchWorkoutSessionResponseSchema = z.object({
+  userWorkoutSessionId: z.uuid(),
+  startedAt: z.iso.datetime(),
+});
+
 export const CompleteWatchWorkoutSessionParamsSchema = z.object({
   sessionId: z.uuid(),
 });
@@ -321,6 +326,7 @@ export const WatchActiveSessionResponseSchema = z.union([
   }),
   z.object({
     active: z.literal(true),
+    startedAt: z.iso.datetime(),
     workoutPlanId: z.uuid(),
     workoutDayId: z.uuid(),
     workoutDayName: z.string(),

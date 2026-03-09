@@ -13,6 +13,7 @@ export interface StartWorkoutSessionInputDto {
 
 export interface StartWorkoutSessionOutputDto {
   userWorkoutSessionId: string;
+  startedAt: string;
 }
 
 export class StartWorkoutSession {
@@ -65,6 +66,9 @@ export class StartWorkoutSession {
       },
     });
 
-    return { userWorkoutSessionId: session.id };
+    return {
+      userWorkoutSessionId: session.id,
+      startedAt: session.startedAt.toISOString(),
+    };
   }
 }

@@ -231,7 +231,9 @@ export const workoutPlanRouter = async (app: FastifyInstance) => {
           workoutDayId,
         });
 
-        return reply.status(201).send(result);
+        return reply.status(201).send({
+          userWorkoutSessionId: result.userWorkoutSessionId,
+        });
       } catch (error) {
         app.log.error(error);
 

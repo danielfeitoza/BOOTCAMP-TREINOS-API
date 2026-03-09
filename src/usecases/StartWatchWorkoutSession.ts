@@ -10,6 +10,7 @@ export interface StartWatchWorkoutSessionInputDto {
 
 export interface StartWatchWorkoutSessionOutputDto {
   userWorkoutSessionId: string;
+  startedAt: string;
 }
 
 export class StartWatchWorkoutSession {

@@ -12,7 +12,7 @@ import {
   CompleteWorkoutSessionResponseSchema,
   ErrorSchema,
   StartWatchWorkoutSessionBodySchema,
-  StartWorkoutSessionResponseSchema,
+  StartWatchWorkoutSessionResponseSchema,
   WatchActiveSessionParamsSchema,
   WatchActiveSessionQuerySchema,
   WatchActiveSessionResponseSchema,
@@ -146,7 +146,7 @@ export const watchRouter = async (app: FastifyInstance) => {
       summary: "Start workout session using smartwatch device code",
       body: StartWatchWorkoutSessionBodySchema,
       response: {
-        201: StartWorkoutSessionResponseSchema,
+        201: StartWatchWorkoutSessionResponseSchema,
         404: ErrorSchema,
         409: ErrorSchema,
         422: ErrorSchema,
