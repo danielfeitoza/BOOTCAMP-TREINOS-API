@@ -18,7 +18,9 @@ import { env } from "./lib/env.js";
 import { aiRoutes } from "./routes/ai.js";
 import { homeRouter } from "./routes/home.js";
 import { meRouter } from "./routes/me.js";
+import { smartwatchRouter } from "./routes/smartwatch.js";
 import { statsRouter } from "./routes/stats.js";
+import { watchRouter } from "./routes/watch.js";
 import { workoutPlanRouter } from "./routes/workout-plan.js";
 
 const envToLogger = {
@@ -90,6 +92,8 @@ await app.register(workoutPlanRouter, { prefix: "/workout-plans" });
 await app.register(homeRouter, { prefix: "/home" });
 await app.register(statsRouter, { prefix: "/stats" });
 await app.register(meRouter, { prefix: "/me" });
+await app.register(smartwatchRouter, { prefix: "/smartwatch" });
+await app.register(watchRouter, { prefix: "/watch" });
 await app.register(aiRoutes, { prefix: "/ai" });
 
 app.withTypeProvider<ZodTypeProvider>().route({

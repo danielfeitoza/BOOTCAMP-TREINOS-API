@@ -20,3 +20,17 @@ export class WorkoutSessionAlreadyStartedError extends Error {
     this.name = "WorkoutSessionAlreadyStartedError";
   }
 }
+
+export class SmartwatchNotFoundError extends Error {
+  constructor(message: string = "Smartwatch not found") {
+    super(message);
+    this.name = "SmartwatchNotFoundError";
+  }
+}
+
+export class SmartwatchDeviceCodeInUseError extends Error {
+  constructor(message: string = "Device code is already linked to another user") {
+    super(message);
+    this.name = "SmartwatchDeviceCodeInUseError";
+  }
+}

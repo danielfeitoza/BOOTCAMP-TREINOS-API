@@ -238,3 +238,63 @@ export const UpsertUserTimezoneResponseSchema = z.object({
   userId: z.string(),
   timezone: z.string(),
 });
+
+export const UpsertSmartwatchBodySchema = z.object({
+  deviceCode: z.uuid(),
+  deviceName: z.string().trim().min(1).max(120),
+});
+
+export const SmartwatchResponseSchema = z.object({
+  id: z.uuid(),
+  userId: z.string(),
+  deviceCode: z.uuid(),
+  deviceName: z.string(),
+});
+
+export const DeleteSmartwatchResponseSchema = z.object({
+  id: z.uuid(),
+  userId: z.string(),
+});
+
+export const WatchTodayWorkoutParamsSchema = z.object({
+  date: z.iso.date(),
+});
+
+export const WatchDeviceCodeQuerySchema = z.object({
+  deviceCode: z.uuid(),
+});
+
+export const WatchTodayWorkoutResponseSchema = z.object({
+  workoutPlanId: z.uuid(),
+  workoutDayId: z.uuid(),
+  workoutDayName: z.string(),
+  weekDay: z.string(),
+  isRest: z.boolean(),
+  exercises: z.array(
+    z.object({
+      id: z.uuid(),
+      name: z.string(),
+      order: z.number(),
+      sets: z.number(),
+      reps: z.number(),
+      restTimeInSeconds: z.number(),
+    }),
+  ),
+});
+
+export const StartWatchWorkoutSessionBodySchema = z.object({
+  deviceCode: z.uuid(),
+  workoutPlanId: z.uuid(),
+  workoutDayId: z.uuid(),
+});
+
+export const CompleteWatchWorkoutSessionParamsSchema = z.object({
+  sessionId: z.uuid(),
+});
+
+export const CompleteWatchWorkoutSessionBodySchema = z.object({
+  deviceCode: z.uuid(),
+  workoutPlanId: z.uuid(),
+  workoutDayId: z.uuid(),
+  completedAt: z.iso.datetime(),
+});

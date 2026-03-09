@@ -14,36 +14,36 @@ datasource db {
 }
 
 model User {
-  id            String        @id
-  workoutPlans  WorkoutPlan[]
-  name          String
-  email         String
-  emailVerified Boolean       @default(false)
-  image         String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  id                  String        @id
+  workoutPlans        WorkoutPlan[]
+  smartwatch          Smartwatch?
+  name                String
+  email               String
+  emailVerified       Boolean       @default(false)
+  image               String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  sessions            Session[]
+  accounts            Account[]
   weightInGrams       Int?
   heightInCentimeters Int?
   age                 Int?
   bodyFatPercentage   Float?
-  timezone            String? @db.VarChar(64)
-
+  timezone            String?       @db.VarChar(64)
 
   @@unique([email])
   @@map("user")
 }
 
 model WorkoutPlan {
-  id         String       @id @default(uuid())
-  name       String
-  userId     String
-  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          String       @id @default(uuid())
+  name        String
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   workoutDays WorkoutDay[]
-  isActive   Boolean      @default(true)
-  createdAt  DateTime     @default(now()) @db.Timestamptz()
-  updatedAt  DateTime     @updatedAt @db.Timestamptz()
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now()) @db.Timestamptz()
+  updatedAt   DateTime     @updatedAt @db.Timestamptz()
 }
 
 enum Weekday {
@@ -68,7 +68,7 @@ model WorkoutDay {
   coverImageUrl              String?
   createdAt                  DateTime          @default(now()) @db.Timestamptz()
   updatedAt                  DateTime          @updatedAt @db.Timestamptz()
-  sessions                    WorkoutSession[]
+  sessions                   WorkoutSession[]
 }
 
 model WorkoutExercise {
@@ -85,13 +85,13 @@ model WorkoutExercise {
 }
 
 model WorkoutSession {
-  id                String     @id @default(uuid())
-  workoutDayId      String
-  workoutDay        WorkoutDay @relation(fields: [workoutDayId], references: [id], onDelete: Cascade)
-  startedAt         DateTime   @db.Timestamptz()
-  completedAt       DateTime?  @db.Timestamptz()
-  createdAt         DateTime   @default(now()) @db.Timestamptz()
-  updatedAt         DateTime   @updatedAt @db.Timestamptz()
+  id           String     @id @default(uuid())
+  workoutDayId String
+  workoutDay   WorkoutDay @relation(fields: [workoutDayId], references: [id], onDelete: Cascade)
+  startedAt    DateTime   @db.Timestamptz()
+  completedAt  DateTime?  @db.Timestamptz()
+  createdAt    DateTime   @default(now()) @db.Timestamptz()
+  updatedAt    DateTime   @updatedAt @db.Timestamptz()
 }
 
 model Session {
@@ -140,4 +140,16 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model Smartwatch {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deviceCode String   @unique @db.Uuid
+  deviceName String   @db.VarChar(120)
+  createdAt  DateTime @default(now()) @db.Timestamptz()
+  updatedAt  DateTime @updatedAt @db.Timestamptz()
+
+  @@map("smartwatch")
 }
