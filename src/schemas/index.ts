@@ -307,6 +307,7 @@ export const StartWatchWorkoutSessionBodySchema = z.object({
 export const StartWatchWorkoutSessionResponseSchema = z.object({
   userWorkoutSessionId: z.uuid(),
   startedAt: z.iso.datetime(),
+  completedAt: z.iso.datetime().nullable(),
 });
 
 export const CompleteWatchWorkoutSessionParamsSchema = z.object({

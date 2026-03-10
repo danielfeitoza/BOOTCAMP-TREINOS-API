@@ -11,6 +11,7 @@ export interface StartWatchWorkoutSessionInputDto {
 export interface StartWatchWorkoutSessionOutputDto {
   userWorkoutSessionId: string;
   startedAt: string;
+  completedAt: string | null;
 }
 
 export class StartWatchWorkoutSession {
@@ -27,10 +28,15 @@ export class StartWatchWorkoutSession {
     }
 
     const startWorkoutSession = new StartWorkoutSession();
-    return startWorkoutSession.execute({
+    const result = await startWorkoutSession.execute({
       userId: smartwatch.userId,
       workoutPlanId: dto.workoutPlanId,
       workoutDayId: dto.workoutDayId,
     });
+
+    return {
+      ...result,
+      completedAt: null,
+    };
   }
 }
