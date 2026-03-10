@@ -27,6 +27,7 @@ export interface GetWatchTodayWorkoutOutputDto {
   workoutDayName: string;
   weekDay: string;
   isRest: boolean;
+  completedAt: string | null;
   exercises: Array<{
     id: string;
     name: string;
@@ -89,12 +90,32 @@ export class GetWatchTodayWorkout {
       throw new NotFoundError("Workout day not found");
     }
 
+    const dayStart = dayjs.utc(dto.date, "YYYY-MM-DD").startOf("day").toDate();
+    const dayEnd = dayjs.utc(dto.date, "YYYY-MM-DD").endOf("day").toDate();
+
+    const workoutSession = await prisma.workoutSession.findFirst({
+      where: {
+        workoutDayId: workoutDay.id,
+        startedAt: {
+          gte: dayStart,
+          lte: dayEnd,
+        },
+      },
+      orderBy: {
+        startedAt: "desc",
+      },
+      select: {
+        completedAt: true,
+      },
+    });
+
     return {
       workoutPlanId: activePlan.id,
       workoutDayId: workoutDay.id,
       workoutDayName: workoutDay.name,
       weekDay: workoutDay.weekday,
       isRest: workoutDay.isRest,
+      completedAt: workoutSession?.completedAt?.toISOString() ?? null,
       exercises: workoutDay.exercises,
     };
   }

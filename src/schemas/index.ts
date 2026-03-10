@@ -286,6 +286,7 @@ export const WatchTodayWorkoutResponseSchema = z.object({
   workoutDayName: z.string(),
   weekDay: z.string(),
   isRest: z.boolean(),
+  completedAt: z.iso.datetime().nullable(),
   exercises: z.array(
     z.object({
       id: z.uuid(),
@@ -328,6 +329,7 @@ export const WatchActiveSessionResponseSchema = z.union([
   z.object({
     active: z.literal(true),
     startedAt: z.iso.datetime(),
+    completedAt: z.iso.datetime().nullable(),
     workoutPlanId: z.uuid(),
     workoutDayId: z.uuid(),
     workoutDayName: z.string(),
