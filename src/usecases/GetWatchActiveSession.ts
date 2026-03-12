@@ -16,6 +16,7 @@ export type GetWatchActiveSessionOutputDto =
     }
   | {
       active: true;
+      sessionId: string;
       startedAt: string;
       completedAt: string | null;
       workoutPlanId: string;
@@ -88,6 +89,7 @@ export class GetWatchActiveSession {
 
     return {
       active: true,
+      sessionId: activeSession.id,
       startedAt: activeSession.startedAt.toISOString(),
       completedAt: activeSession.completedAt?.toISOString() ?? null,
       workoutPlanId: activeSession.workoutDay.workoutPlanId,

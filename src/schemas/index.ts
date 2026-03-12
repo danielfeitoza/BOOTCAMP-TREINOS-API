@@ -328,6 +328,7 @@ export const WatchActiveSessionResponseSchema = z.union([
   }),
   z.object({
     active: z.literal(true),
+    sessionId: z.uuid(),
     startedAt: z.iso.datetime(),
     completedAt: z.iso.datetime().nullable(),
     workoutPlanId: z.uuid(),
